@@ -1,0 +1,120 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+.f3 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  z-index: 0; /* MAKES the container appear on top of other elements */
+  position: absolute; /* REQUIRED for z-index */
+}
+
+.background {
+  /* REQUIRED FOR Z-INDEX ... positions the div in reference to the window */
+  position: absolute;
+
+  top: 0px; /* positions div's top at the top edge of the window */
+  left: 0px; /* positions div's left side at the left edge of the window */
+
+  width: 100%;
+  height: 400px;
+
+  background-image: url("../../uploads/assets/logo-transparent.png");
+  background-repeat: repeat;
+}
+
+.f3 .cursor-pointer {
+  cursor: pointer;
+}
+.f3 svg.main_svg {
+  width: 100%;
+  height: 100%;
+  background-color: #0d3c28;
+  color: #3b5560;
+  background-image: url("../../uploads/assets/logo-smalls.png");
+  background-repeat: repeat;
+}
+.f3 svg.main_svg text {
+  fill: currentColor;
+}
+.f3 rect.card-female,
+.f3 .card-female .card-body-rect,
+.f3 .card-female .text-overflow-mask {
+  fill: lightpink;
+}
+.f3 rect.card-male,
+.f3 .card-male .card-body-rect,
+.f3 .card-male .text-overflow-mask {
+  fill: lightblue;
+}
+.f3 .card-genderless .card-body-rect,
+.f3 .card-genderless .text-overflow-mask {
+  fill: lightgray;
+}
+.f3 .card_add .card-body-rect {
+  fill: #3b5560;
+  stroke-width: 4px;
+  stroke: #fff;
+  cursor: pointer;
+}
+.f3 g.card_add text {
+  fill: #fff;
+}
+.f3 .card-main {
+  stroke: #000;
+}
+.f3 .card_family_tree rect {
+  transition: 0.3s;
+}
+.f3 .card_family_tree:hover rect {
+  transform: scale(1.1);
+}
+.f3 .card_add_relative {
+  cursor: pointer;
+  color: #fff;
+  transition: 0.3s;
+}
+.f3 .card_add_relative circle {
+  fill: rgba(0, 0, 0, 0);
+}
+.f3 .card_add_relative:hover {
+  color: black;
+}
+.f3 .card_edit.pencil_icon {
+  color: #fff;
+  transition: 0.3s;
+}
+.f3 .card_edit.pencil_icon:hover {
+  color: black;
+}
+.f3 .card_break_link,
+.f3 .link_upper,
+.f3 .link_lower,
+.f3 .link_particles {
+  transform-origin: 50% 50%;
+  transition: 1s;
+}
+.f3 .card_break_link {
+  color: #fff;
+}
+.f3 .card_break_link.closed .link_upper {
+  transform: translate(-140.5px, 655.6px);
+}
+.f3 .card_break_link.closed .link_upper g {
+  transform: rotate(-58deg);
+}
+.f3 .card_break_link.closed .link_particles {
+  transform: scale(0);
+}
+.f3 .input-field input {
+  height: 2.5rem !important;
+}
+.f3 .input-field > label:not(.label-icon).active {
+  -webkit-transform: translateY(-8px) scale(0.8);
+  transform: translateY(-8px) scale(0.8);
+}
