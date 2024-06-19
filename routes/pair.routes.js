@@ -122,11 +122,11 @@ router.delete("/:id", userMiddleware, async (req, res) => {
     }
 
     const children = await Canary.find({
-      $or: [{ "rels.father": pair.father }, { "rels.mother": pair.mother }],
+      $or: [{ "rels.father": pair.male }, { "rels.mother": pair.male }],
     });
 
     if (children.length === 0) {
-      await removeSpouses(pair.father, pair.mother);
+      await removeSpouses(pair.male, pair.female);
     }
 
     await Promise.all([

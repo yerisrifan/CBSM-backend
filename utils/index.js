@@ -29,8 +29,6 @@ async function removeSpouses(fatherId, motherId) {
   ]);
 }
 
-module.exports = checkAndUpdateSpouses;
-
 module.exports = {
   checkAndUpdateSpouses,
   removeSpouses,

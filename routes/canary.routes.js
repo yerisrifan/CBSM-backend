@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Canary = require("../models/canary.model");
+const Egg = require("../models/eggs.model");
 const userMiddleware = require("../middleware/index");
-const uuid = require("uuid");
 const { getAllRelatedCanaries, deleteAllRelatedCanaries } = require("../lib");
 
 // @route GET /canary
@@ -207,7 +207,7 @@ router.post("/:id/spouse", userMiddleware, async (req, res) => {
 // POST /canary/child
 // Access: Private
 router.post("/child", userMiddleware, async (req, res) => {
-  const { ring, gender, father_id, mother_id } = req.body;
+  const { ring, gender, father_id, mother_id, egg_id } = req.body;
   try {
     const father = await Canary.findOne({ _id: father_id });
     if (!father) {
@@ -220,6 +220,7 @@ router.post("/child", userMiddleware, async (req, res) => {
     const child = new Canary({
       owner: req.user.id,
       data: {
+        date_of_birth: new Date(),
         ring,
         gender,
       },
@@ -233,6 +234,8 @@ router.post("/child", userMiddleware, async (req, res) => {
     mother.rels.children.push(child.id);
     await father.save();
     await mother.save();
+    // also delete egg
+    await Egg.findByIdAndDelete(egg_id);
     res.status(201).send({ msg: "Child created successfully!", child });
   } catch (error) {
     res.status(500).send({ error });
@@ -244,7 +247,7 @@ router.post("/child", userMiddleware, async (req, res) => {
 // Access: Private
 router.get("/:id/related", async (req, res) => {
   try {
-    const bird = await Canary.findById(req.params.id);
+    const bird = await Canary.findById(req.params.id).lean();
     if (!bird) {
       return res.status(404).send({ msg: "Bird not found!" });
     }
