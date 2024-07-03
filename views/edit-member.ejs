@@ -1,0 +1,37 @@
+<div class="body flex-grow-1">
+    <div class="container-lg px-4">
+      <div class="row mb-4">
+        <form action="/edit-member/<%= member._id %>" method="POST">
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Title</label>
+                <input type="text" class="form-control" value="<%= member.owner_name %>"  name="title" placeholder="Lorem Ipsum">
+              </div>
+              <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <select name="user_level" class="form-select" aria-label="Default select example">
+                    <%
+                        var options = [ {
+                            value: 0,
+                            text: "Non Member"
+                        }, {
+                            value: 1,
+                            text: "Member"
+                        
+                        },
+                        {
+                            value: 2,
+                            text: "Admin"
+                        }];
+                        for ( var i = 0; i < options.length; i++ )
+                        {
+                            var selected = ( options[0].value == i ) ? "selected" : "";
+                            %><option value="<%=options[i].value %>" <%=selected %>><%= options[i].text %></option><%
+                        }
+                        %>
+                  </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>         
+          </form>
+      </div>
+    </div>
+  </div>

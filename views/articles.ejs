@@ -1,0 +1,28 @@
+<div class="body flex-grow-1">
+    <div class="container-lg px-4">
+        <a href="/add-article" type="button" class="btn btn-primary mb-4">+ Add Article</a>
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Content</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(var i=0; i < articles.length; i++) { %>
+              <tr>
+                <th scope="row"><%= [i+1] %></th>
+                <td><%= articles[i].title %></td>
+                <td class="text-truncate" style="max-width: 500px;"><%= articles[i].content %></td>
+                <td>
+                    <a href="/edit-article/<%= articles[i]._id %>" type="button" class="btn btn-success btn-sm  text-white">Edit</a>
+                    <a href="/delete-article/<%= articles[i]._id %>" type="button" class="btn btn-danger btn-sm text-white">Delete</a>
+                </td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+    </div>
+  </div>

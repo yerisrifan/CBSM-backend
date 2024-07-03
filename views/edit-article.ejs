@@ -1,0 +1,19 @@
+<div class="body flex-grow-1">
+    <div class="container-lg px-4">
+      <div class="row mb-4">
+        <form action="/edit-article/<%= article._id %>" method="POST">
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Title</label>
+                <input type="text" class="form-control" value="<%= article.title %>"  name="title" placeholder="Lorem Ipsum">
+              </div>
+              <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <textarea id="editor" name="content">
+                  <%= article.content %>
+                </textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>         
+          </form>
+      </div>
+    </div>
+  </div>

@@ -36,7 +36,7 @@ const pairSchema = mongoose.Schema(
   }
 );
 
-pairSchema.index({ owner: 1 }, { unique: true });
+pairSchema.index({ owner: 1 });
 
 // Middleware to remove incubation and egg documents when a pair is removed
 pairSchema.pre("remove", async function (next) {

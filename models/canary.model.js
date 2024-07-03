@@ -4,7 +4,6 @@ const canarySchema = mongoose.Schema(
   {
     id: {
       type: String,
-      unique: true,
     },
     data: {
       date_of_banding: {
@@ -51,12 +50,14 @@ const canarySchema = mongoose.Schema(
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Canary",
+          default: null,
         },
       ],
       children: [
         {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Canary",
+          default: null,
         },
       ],
     },
@@ -83,5 +84,18 @@ canarySchema.methods.toJSON = function () {
 
   return canaryObject;
 };
+
+// middleware to delete avatar files when canary is deleted
+canarySchema.pre("remove", async function (next) {
+  const canary = this;
+  if (canary.data.avatar !== "uploads/assets/default-bird.png") {
+    await fs.unlink(canary.data.avatar, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }
+  next();
+});
 
 module.exports = mongoose.model("Canary", canarySchema);

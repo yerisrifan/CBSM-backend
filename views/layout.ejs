@@ -1,0 +1,43 @@
+<%- include('partials/head') %>
+<div class="c-wrapper">
+  <%- include('partials/sidebar') %>
+  <div class="wrapper d-flex flex-column min-vh-100">
+    <%- include('partials/header') %>
+     <%- body %>
+    <%- include('partials/footer') %>
+  </div>
+</div>
+<script src="/vendors/@coreui/coreui/js/coreui.bundle.min.js"></script>
+<script src="/vendors/simplebar/js/simplebar.min.js"></script>
+<!-- <script>
+  const header = document.querySelector('header.header');
+
+  document.addEventListener('scroll', () => {
+    if (header) {
+      header.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0);
+    }
+  });
+</script> -->
+<!-- Plugins and scripts required by this view-->
+<script src="/vendors/chart.js/js/chart.umd.js"></script>
+<script src="/vendors/@coreui/chartjs/js/coreui-chartjs.js"></script>
+<script src="/vendors/@coreui/utils/js/index.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="https://cdn.tiny.cloud/1/5jmi3x1xx55bg7dqlbcomgek6zfj6r4fwrlt6v3gy2uztqz6/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+  tinymce.init({
+    selector: '#editor',
+    plugins: 'Wcode image link media',
+    toolbar: 'insertfile | undo redo | link image media | code | blocks | bold italic | alignleft aligncenter alignright alignjustify | outdent indent',
+    images_upload_url: "/api/upload/web", // IF you're running from CRA please add full route here "http://localhost:80/upload/image"
+    automatic_uploads: true,
+    contextmenu: "link image table",
+    height: '500px',
+     skin: 'oxide-dark',
+     content_css: 'dark'
+  });
+</script>
+</body>
+</html>
+

@@ -21,12 +21,22 @@ const storageProfile = multer.diskStorage({
   },
 });
 
+const storageArticle = multer.diskStorage({
+  destination(req, file, callback) {
+    callback(null, "./uploads/article");
+  },
+  filename(req, file, callback) {
+    callback(null, `${Date.now()}_${file.originalname}`);
+  },
+});
+
 router.get("/", (req, res) => {
   res.send("upload");
 });
 
 const upload = multer({ storage });
 const uploadProfile = multer({ storage: storageProfile });
+const uploadArticle = multer({ storage: storageArticle });
 
 // @route POST /upload/profile
 // @desc Upload picture
@@ -49,6 +59,16 @@ router.post("/", userMiddleware, upload.single("photo"), (req, res) => {
   res.status(200).json({
     message: "success!",
     path: req.file.path,
+  });
+});
+
+router.post("/web", uploadArticle.single("file"), (req, res) => {
+  const baseUrl = `${req.protocol}://${req.get("host")}/`;
+  res.status(200).json({
+    message: "success!",
+    path: req.file.path,
+    location: baseUrl + req.file.path,
+    url: baseUrl + req.file.path,
   });
 });
 
