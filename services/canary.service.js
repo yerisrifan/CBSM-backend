@@ -21,9 +21,9 @@ class CanaryService {
       .populate("owner")
       .populate("rels.father rels.mother")
       .lean();
-    if (canary && canary.owner._id.toString() !== userId) {
-      throw new Error("Not authorized");
-    }
+    // if (canary && canary.owner._id.toString() !== userId) {
+    //   throw new Error("Not authorized");
+    // }
     return canary;
   }
 
@@ -163,6 +163,9 @@ class CanaryService {
       throw new Error("Bird not found!");
     }
     return getAllRelatedCanaries(bird.id);
+  }
+  static async getCanariesByRing(ring) {
+    return Canary.find({ "data.ring": ring }).lean();
   }
 }
 

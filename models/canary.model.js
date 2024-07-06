@@ -75,6 +75,12 @@ canarySchema.pre("save", function (next) {
   next();
 });
 
+// midleware untuk mengubah data ring menjadi lowercase sebelum di save
+canarySchema.pre("save", function (next) {
+  this.data.ring = this.data.ring.toLowerCase();
+  next();
+});
+
 // Middleware to add base URL on avatar before sending response
 canarySchema.methods.toJSON = function () {
   const canary = this;
