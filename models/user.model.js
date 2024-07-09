@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      //required: true,
     },
     avatar: {
       type: String,
@@ -67,5 +67,15 @@ userSchema.methods.toJSON = function () {
   delete userObject.password;
   return userObject;
 };
+
+// create middleware to delete all user's canaries,pair , incubation and eggs if user deleted
+userSchema.pre("remove", async function (next) {
+  const user = this;
+  await user.model("Canary").deleteMany({ owner: user._id });
+  await user.model("Pair").deleteMany({ owner: user._id });
+  await user.model("Incubation").deleteMany({ owner: user._id });
+  await user.model("Egg").deleteMany({ owner: user._id });
+  next();
+});
 
 module.exports = mongoose.model("User", userSchema);

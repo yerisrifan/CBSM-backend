@@ -2,12 +2,17 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const UserService = require("../services/user.service");
+const { OAuth2Client } = require("google-auth-library");
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class UserController {
   static async getUser(req, res) {
     try {
       const user = await UserService.getUserById(req.user.id);
-      res.status(200).send({ msg: "User found", user });
+      // create token
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      res.status(200).send({ msg: "User found", user, token });
     } catch (error) {
       console.error(error.message);
       res.status(500).send({ msg: "Error getting user", error });
@@ -99,6 +104,43 @@ class UserController {
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Server Error");
+    }
+  }
+
+  static async googleSignIn(req, res) {
+    const { idToken, name, photo, id } = req.body.idToken;
+    console.log("Google Sign-In request:", name);
+
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const { email } = ticket.getPayload();
+
+      // Check if user exists in database
+      let user = await User.findOne({ email });
+      if (!user) {
+        // Create new user if not exists
+        user = new User({
+          email,
+          password: "", // or generate a random password
+          owner_name: name,
+          googleId: id,
+          // other fields as needed
+        });
+        await user.save();
+      }
+
+      // Generate JWT token
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+      // Return token and user data
+      res.status(200).json({ token, user });
+    } catch (error) {
+      console.error("Google Sign-In error:", error);
+      res.status(500).json({ message: "Error signing in with Google" });
     }
   }
 }

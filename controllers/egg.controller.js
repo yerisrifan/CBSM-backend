@@ -16,6 +16,22 @@ class EggController {
     }
   }
 
+  static async createMultiEgg(req, res) {
+    const { incubation, eggs } = req.body;
+    const owner = req.user._id;
+    try {
+      const egg = await EggService.createMultiEgg({
+        incubation,
+        eggs,
+        owner,
+      });
+      res.status(201).send({ msg: "Successfully create an egg", egg });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send({ msg: "Error creating an egg", error });
+    }
+  }
+
   static async createEgg(req, res) {
     const { incubation, laid_date, status } = req.body;
     const owner = req.user._id;

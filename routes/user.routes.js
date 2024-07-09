@@ -11,4 +11,7 @@ router.put("/", userMiddleware, UserController.updateUser);
 router.delete("/:id", UserController.deleteUser);
 router.post("/fcm_token", userMiddleware, UserController.updateUserFCMToken);
 
+// Google OAuth routes
+router.post("/google/signin", UserController.googleSignIn);
+
 module.exports = router;

@@ -75,9 +75,9 @@ canarySchema.pre("save", function (next) {
   next();
 });
 
-// midleware untuk mengubah data ring menjadi lowercase sebelum di save
+// midleware untuk mengubah data ring menjadi uppercase sebelum di save
 canarySchema.pre("save", function (next) {
-  this.data.ring = this.data.ring.toLowerCase();
+  this.data.ring = this.data.ring.toUpperCase();
   next();
 });
 
