@@ -167,6 +167,10 @@ class CanaryService {
   static async getCanariesByRing(ring) {
     return Canary.find({ "data.ring": ring }).lean();
   }
+  static async getCanaryByStatus(status) {
+    // find canary with status Onsale and owner user_level is 1 or 2
+    return Canary.find({ "data.status": status }).populate("owner").lean();
+  }
 }
 
 module.exports = CanaryService;

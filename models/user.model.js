@@ -48,6 +48,20 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    notification: {
+      fcm_token: {
+        type: String,
+        default: "",
+      },
+      os: {
+        type: String,
+        default: "",
+      },
+      deviceName: {
+        type: String,
+        default: "",
+      },
+    },
   },
   { timestamps: true }
 );

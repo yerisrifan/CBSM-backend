@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const fs = require("fs");
 
 class UserService {
   static async getUserById(id) {
@@ -10,11 +11,9 @@ class UserService {
   }
 
   static async getAllUsers() {
-    try {
-      return await User.find();
-    } catch (error) {
-      throw new Error(`Error getting users: ${error.message}`);
-    }
+    // create filter show user with user_level !== 0
+    const query = { user_level: { $ne: 0 } };
+    return await User.find(query).sort({ createdAt: -1 }).lean();
   }
 
   static async createUser(userData) {
@@ -29,7 +28,15 @@ class UserService {
 
   static async updateUser(id, userData) {
     try {
-      return await User.findByIdAndUpdate(id, userData, { new: true });
+      const oldUserData = await User.findById(id);
+      if (userData.avatar && userData.avatar !== oldUserData.avatar) {
+        fs.unlinkSync(oldUserData.avatar);
+        console.log("Avatar deleted", oldUserData.avatar);
+      }
+
+      const user = await User.findByIdAndUpdate(id, userData, { new: true });
+
+      return user;
     } catch (error) {
       throw new Error(`Error updating user: ${error.message}`);
     }
@@ -43,11 +50,19 @@ class UserService {
     }
   }
 
-  static async updateUserFCMToken(id, fcm_token) {
+  static async updateUserFCMToken(id, fcm_token, deviceInfo) {
     try {
       return await User.findByIdAndUpdate(
         id,
-        { $set: { fcm_token } },
+        {
+          $set: {
+            notification: {
+              fcm_token,
+              os: deviceInfo.os,
+              deviceName: deviceInfo.deviceName,
+            },
+          },
+        },
         { new: true }
       );
     } catch (error) {

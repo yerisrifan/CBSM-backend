@@ -92,14 +92,18 @@ class UserController {
 
   static async updateUserFCMToken(req, res) {
     const id = req.user._id || req.user.id;
-    const { fcm_token } = req.body;
+    const { fcm_token, deviceInfo } = req.body;
     try {
       const user = await UserService.getUserById(id);
       // chek if user fcm_token is already saved
-      if (user.fcm_token === fcm_token) {
+      if (user.notification.fcm_token === fcm_token) {
         return res.status(200).send({ msg: "User FCM token already saved" });
       }
-      const save_token = await UserService.updateUserFCMToken(id, fcm_token);
+      const save_token = await UserService.updateUserFCMToken(
+        id,
+        fcm_token,
+        deviceInfo
+      );
       res.status(200).send({ msg: "User FCM token updated" });
     } catch (error) {
       console.error(error.message);

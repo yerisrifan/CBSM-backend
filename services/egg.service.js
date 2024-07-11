@@ -39,10 +39,13 @@ class EggService {
   }
 
   static async updateEgg(id, { laid_date, status }, owner) {
+    console.log(status);
     const egg = await Egg.findById(id);
-    // if (!egg || egg.owner.toString() !== owner) {
-    //   return null;
-    // }
+    if (status === "Hatched") {
+      egg.hatched_date = new Date();
+    } else {
+      egg.hatched_date = null;
+    }
     egg.laid_date = laid_date;
     egg.status = status;
     await egg.save();

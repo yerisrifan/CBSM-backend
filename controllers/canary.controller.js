@@ -3,8 +3,17 @@ const CanaryService = require("../services/canary.service");
 class CanaryController {
   static async getAllCanaries(req, res) {
     try {
-      const { gender, ring } = req.query;
+      const { gender, ring, status } = req.query;
       const userId = req.user.id;
+      // search by status
+      if (status) {
+        const canaryStatus = await CanaryService.getCanaryByStatus(status);
+        return res.status(200).send({
+          msg: "Successfully get canary data",
+          count: canaryStatus.length,
+          canary: canaryStatus,
+        });
+      }
       // search by ring
       if (ring) {
         const canary = await CanaryService.getCanariesByRing(ring);
@@ -153,6 +162,16 @@ class CanaryController {
       const { ring } = req.query;
       //const canary = await CanaryService.getCanariesByRing(ring);
       //res.status(200).send({ msg: "Successfully get canary data", canary });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ msg: "Error getting canary data", error });
+    }
+  }
+  static async getCanaryByStatus(req, res) {
+    try {
+      const { status } = req.query;
+      const canaries = await CanaryService.getCanaryByStatus(status);
+      res.status(200).send({ msg: "Successfully get canary data", canaries });
     } catch (error) {
       console.error(error);
       res.status(500).send({ msg: "Error getting canary data", error });

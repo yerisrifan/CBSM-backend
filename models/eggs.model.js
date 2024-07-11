@@ -7,6 +7,9 @@ const eggSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    hatched_date: {
+      type: Date,
+    },
     status: {
       type: String,
       enum: [

@@ -4,11 +4,11 @@ class IncubationController {
   static async getAllIncubations(req, res) {
     const owner = req.user._id;
     try {
-      const incubations = await IncubationService.getAllIncubations(owner);
+      const incubation = await IncubationService.getAllIncubations(owner);
       res.status(200).send({
         msg: "Successfully get incubation data",
-        count: incubations.length,
-        incubations,
+        count: incubation.length,
+        incubation,
       });
     } catch (error) {
       console.error(error.message);

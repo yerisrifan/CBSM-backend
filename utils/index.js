@@ -1,4 +1,8 @@
 const Canary = require("../models/canary.model");
+const { Expo } = require("expo-server-sdk");
+
+// inisiasi expo
+const expo = new Expo();
 
 // Function to check and update spouses
 async function checkAndUpdateSpouses(fatherId, motherId) {
@@ -191,9 +195,43 @@ async function deleteAllRelatedCanaries(_id) {
   await Canary.findOneAndDelete(_id);
 }
 
+// Fungsi untuk mengirim notifikasi
+async function sendNotifications(tokens, title, body, data = {}) {
+  let messages = [];
+  for (let token of tokens) {
+    if (!Expo.isExpoPushToken(token)) {
+      console.error(`Push token ${token} is not a valid Expo push token`);
+      continue;
+    }
+
+    messages.push({
+      to: token,
+      sound: "default",
+      title: title,
+      body: body,
+      data: data,
+    });
+  }
+
+  let chunks = expo.chunkPushNotifications(messages);
+  let tickets = [];
+
+  for (let chunk of chunks) {
+    try {
+      let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+      tickets.push(...ticketChunk);
+    } catch (error) {
+      console.error("Error sending notifications:", error);
+    }
+  }
+
+  return tickets;
+}
+
 module.exports = {
   checkAndUpdateSpouses,
   removeSpouses,
   getAllRelatedCanaries,
   deleteAllRelatedCanaries,
+  sendNotifications,
 };
