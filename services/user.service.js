@@ -28,17 +28,32 @@ class UserService {
 
   static async updateUser(id, userData) {
     try {
-      const oldUserData = await User.findById(id);
-      if (userData.avatar && userData.avatar !== oldUserData.avatar) {
-        fs.unlinkSync(oldUserData.avatar);
-        console.log("Avatar deleted", oldUserData.avatar);
+      const user = await User.findById(id);
+
+      if (!user) {
+        throw new Error("User not found");
       }
 
-      const user = await User.findByIdAndUpdate(id, userData, { new: true });
+      if (userData.avatar && userData.avatar !== user.avatar) {
+        await this.removeOldAvatar(user.avatar);
+      }
+
+      Object.assign(user, userData);
+      await user.save();
 
       return user;
     } catch (error) {
       throw new Error(`Error updating user: ${error.message}`);
+    }
+  }
+
+  static async removeOldAvatar(avatarPath) {
+    try {
+      if (avatarPath && fs.existsSync(avatarPath)) {
+        await fs.promises.unlink(avatarPath);
+      }
+    } catch (error) {
+      console.error(`Error removing old avatar: ${error.message}`);
     }
   }
 

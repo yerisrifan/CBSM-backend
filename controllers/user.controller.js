@@ -72,7 +72,7 @@ class UserController {
       }
       res.status(200).send({ msg: "User updated", user });
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
       res.status(400).send(error);
     }
   }

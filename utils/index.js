@@ -2,7 +2,7 @@ const Canary = require("../models/canary.model");
 const { Expo } = require("expo-server-sdk");
 
 // inisiasi expo
-const expo = new Expo();
+const expo = new Expo({ useFcmV1: true });
 
 // Function to check and update spouses
 async function checkAndUpdateSpouses(fatherId, motherId) {
