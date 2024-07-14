@@ -1,4 +1,5 @@
 const CanaryService = require("../services/canary.service");
+const puppeteer = require("puppeteer");
 
 class CanaryController {
   static async getAllCanaries(req, res) {
@@ -150,6 +151,8 @@ class CanaryController {
       res.render("family-tree", {
         familyData: family,
         family: family,
+        pageTitle: family[0].data.ring + " - CBSM Family Tree",
+        canaryId: canaryId,
         layout: false,
       });
     } catch (error) {
@@ -158,7 +161,6 @@ class CanaryController {
   }
   static async getCanaryByRing(req, res) {
     try {
-      console.log(req.query);
       const { ring } = req.query;
       //const canary = await CanaryService.getCanariesByRing(ring);
       //res.status(200).send({ msg: "Successfully get canary data", canary });
@@ -175,6 +177,56 @@ class CanaryController {
     } catch (error) {
       console.error(error);
       res.status(500).send({ msg: "Error getting canary data", error });
+    }
+  }
+  static async downloadPDF(req, res) {
+    const canaryId = req.params.id;
+    try {
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+
+      // set the viewport so the chart is fully rendered
+      await page.setViewport({ width: 1200, height: 800 });
+      await page.goto(
+        process.env.BASE_URL + `/api/canary/${canaryId}/related`,
+        {
+          waitUntil: "networkidle0",
+        }
+      );
+      await page.waitForSelector("#FamilyChart");
+      // create delay to wait for the chart to render
+
+      // await page.waitForTimeout(2000);
+
+      // waitForTimeout is not working, so we use this instead
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      // Hide the download button before generating PDF
+      await page.evaluate(() => {
+        const logoContainer = document.querySelector(".logo-container");
+        if (logoContainer) logoContainer.style.display = "flex";
+        const downloadButton = document.querySelector(".download-button");
+        if (downloadButton) downloadButton.style.display = "none";
+      });
+
+      // Generate the PDF
+      const pdf = await page.pdf({
+        format: "A4",
+        printBackground: true,
+        landscape: true,
+      });
+
+      await browser.close();
+
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=family-chart.pdf"
+      );
+      res.send(pdf);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ error });
     }
   }
 }

@@ -209,6 +209,7 @@ async function sendNotifications(tokens, title, body, data = {}) {
       sound: "default",
       title: title,
       body: body,
+      priority: "high",
       data: data,
     });
   }

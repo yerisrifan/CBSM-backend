@@ -165,11 +165,23 @@ class CanaryService {
     return getAllRelatedCanaries(bird.id);
   }
   static async getCanariesByRing(ring) {
-    return Canary.find({ "data.ring": ring }).lean();
+    return Canary.find({
+      "data.ring": { $regex: new RegExp(`^${ring}$`, "i") },
+    }).lean();
   }
   static async getCanaryByStatus(status) {
-    // find canary with status Onsale and owner user_level is 1 or 2
-    return Canary.find({ "data.status": status }).populate("owner").lean();
+    const canaries = await Canary.find({
+      "data.status": status,
+    })
+      .populate({
+        path: "owner",
+        match: { user_level: { $ne: 0 } },
+        select: "user_level",
+      })
+      .lean();
+
+    // Filter out canaries where owner is null (due to not matching the user_level criteria)
+    return canaries.filter((canary) => canary.owner !== null);
   }
 }
 

@@ -57,6 +57,11 @@ class IncubationService {
     }
     await Egg.deleteMany({ incubation: incubationId });
     await Incubation.findByIdAndDelete(incubationId);
+    const pair = await Pair.findById(incubation.pair);
+    pair.incubation = pair.incubation.filter(
+      (incubation) => incubation.toString() !== incubationId.toString()
+    );
+    await pair.save();
   }
 }
 

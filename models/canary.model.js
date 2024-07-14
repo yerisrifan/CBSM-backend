@@ -17,6 +17,10 @@ const canarySchema = mongoose.Schema(
         type: String,
         default: "",
       },
+      ring_alt: {
+        type: String,
+        default: "",
+      },
       gender: {
         type: String,
         enum: ["unknown", "M", "F"],

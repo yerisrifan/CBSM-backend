@@ -30,6 +30,7 @@
     "normalize-mongoose": "^1.0.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "puppeteer": "^22.13.0",
     "uuid": "^10.0.0"
   }
 }

@@ -54,6 +54,7 @@ app.use("/api/pair", require("./routes/pair.routes"));
 app.use("/api/eggs", eggRoutes);
 app.use("/api/incubation", require("./routes/incubation.routes"));
 app.use("/api/guides", require("./routes/guide.routes"));
+app.use("/api/ring", require("./routes/ring.routes"));
 
 // running the server
 app.listen(PORT, () => {

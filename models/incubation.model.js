@@ -7,6 +7,11 @@ const incubationSchema = mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    status: {
+      type: String,
+      enum: ["Incubating", "Discarded"],
+      default: "Incubating",
+    },
     eggs: [
       {
         type: mongoose.Schema.Types.ObjectId,

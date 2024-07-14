@@ -9,6 +9,7 @@ const eggSchema = mongoose.Schema(
     },
     hatched_date: {
       type: Date,
+      default: null,
     },
     status: {
       type: String,
