@@ -165,12 +165,39 @@ class CanaryService {
     return getAllRelatedCanaries(bird.id);
   }
   static async getCanariesByRing(ring) {
-    const escapeRegex = (string) =>
-      string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-    const safeRing = escapeRegex(ring);
-    return Canary.find({
-      "data.ring": { $regex: new RegExp(safeRing, "i") },
-    }).lean();
+    console.log("Searching for ring:", ring);
+    try {
+      // Hapus spasi di awal dan akhir string
+      const trimmedRing = ring.trim();
+
+      // Escape karakter khusus regex
+      const escapeRegex = (string) =>
+        string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+      const safeRing = escapeRegex(trimmedRing);
+
+      // Buat pola regex yang lebih fleksibel
+      // Ini akan mencocokkan setiap karakter individu, mengabaikan case,
+      // dan memungkinkan spasi opsional di antara karakter
+      const flexiblePattern = safeRing
+        .split("")
+        .map((char) => `${char}\\s*`)
+        .join("");
+
+      console.log("Flexible regex pattern:", flexiblePattern);
+
+      const result = await Canary.find({
+        "data.ring": { $regex: new RegExp(`^${flexiblePattern}$`, "i") },
+      }).lean();
+
+      console.log(`Found ${result.length} canaries`);
+      if (result.length > 0) {
+        console.log("Sample result:", JSON.stringify(result[0].data.ring));
+      }
+      return result;
+    } catch (error) {
+      console.error("Error in getCanariesByRing:", error);
+      throw error;
+    }
   }
   static async getCanaryByStatus(status) {
     const canaries = await Canary.find({
