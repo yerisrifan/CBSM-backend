@@ -165,8 +165,11 @@ class CanaryService {
     return getAllRelatedCanaries(bird.id);
   }
   static async getCanariesByRing(ring) {
+    const escapeRegex = (string) =>
+      string.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+    const safeRing = escapeRegex(ring);
     return Canary.find({
-      "data.ring": { $regex: new RegExp(`^${ring}$`, "i") },
+      "data.ring": { $regex: new RegExp(safeRing, "i") },
     }).lean();
   }
   static async getCanaryByStatus(status) {
