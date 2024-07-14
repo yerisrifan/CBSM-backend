@@ -17,7 +17,8 @@ class CanaryController {
       }
       // search by ring
       if (ring) {
-        const canary = await CanaryService.getCanariesByRing(ring);
+        const _ring = decodeURIComponent(ring);
+        const canary = await CanaryService.getCanariesByRing(_ring);
         return res.status(200).send({
           msg: "Successfully get canary data",
           count: canary.length,
