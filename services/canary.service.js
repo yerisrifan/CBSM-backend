@@ -28,14 +28,22 @@ class CanaryService {
   }
 
   static async createCanary(userId, canaryData) {
-    const { date_of_banding, date_of_birth, ring, gender, status, photos } =
-      canaryData;
+    const {
+      date_of_banding,
+      date_of_birth,
+      ring,
+      gender,
+      status,
+      photos,
+      ring_alt,
+    } = canaryData;
     const canary = new Canary({
       owner: userId,
       data: {
         date_of_banding,
         date_of_birth,
         ring,
+        ring_alt,
         gender,
         status,
         avatar: photos.avatar,

@@ -19,7 +19,7 @@ const canarySchema = mongoose.Schema(
       },
       ring_alt: {
         type: String,
-        default: "",
+        default: null,
       },
       gender: {
         type: String,
