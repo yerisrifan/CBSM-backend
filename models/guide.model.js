@@ -20,6 +20,10 @@ const guideSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    is_member_only: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

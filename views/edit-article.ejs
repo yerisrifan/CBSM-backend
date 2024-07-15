@@ -1,19 +1,43 @@
 <div class="body flex-grow-1">
-    <div class="container-lg px-4">
-      <div class="row mb-4">
-        <form action="/edit-article/<%= article._id %>" method="POST">
-            <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Title</label>
-                <input type="text" class="form-control" value="<%= article.title %>"  name="title" placeholder="Lorem Ipsum">
-              </div>
-              <div class="mb-3">
-                <label for="content" class="form-label">Content</label>
-                <textarea id="editor" name="content">
+  <div class="container-lg px-4">
+    <div class="row mb-4">
+      <form action="/edit-article/<%= article._id %>" method="POST">
+        <div class="mb-3">
+          <label for="exampleFormControlInput1" class="form-label">Title</label>
+          <input
+            type="text"
+            class="form-control"
+            value="<%= article.title %>"
+            name="title"
+            placeholder="Lorem Ipsum"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="is_member_only" class="form-label"
+            >Article Access</label
+          >
+          <!-- <select class="form-select" aria-label="Default select example" name="is_member_only">
+            <option selected>Open this select menu</option>
+            <option value="false" selected>Non Member</option>
+            <option value="true">Member</option>
+          </select> -->
+
+          <select class="form-select" aria-label="Default select example" name="is_member_only">
+            <option value="" disabled <%= article.is_member_only === undefined ? 'selected' : '' %>>Open this select menu</option>
+            <option value="false" <%= article.is_member_only === false ? 'selected' : '' %>>Non Member</option>
+            <option value="true" <%= article.is_member_only === true ? 'selected' : '' %>>Member</option>
+          </select>
+          
+        </div>
+        <div class="mb-3">
+          <label for="content" class="form-label">Content</label>
+          <textarea id="editor" name="content">
                   <%= article.content %>
-                </textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit</button>         
-          </form>
-      </div>
+                </textarea
+          >
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
     </div>
   </div>
+</div>

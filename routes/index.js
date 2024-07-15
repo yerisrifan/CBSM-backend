@@ -181,9 +181,10 @@ router.post("/add-article", async (req, res) => {
   if (!req.session.user.id) {
     return res.redirect("/login");
   }
-  const { title, content } = req.body;
+  const { title, content, is_member_only } = req.body;
   const guide = new Guide({
     title,
+    is_member_only,
     content,
     author: req.session.user.id,
   });
@@ -206,7 +207,6 @@ router.get("/edit-article/:id", async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/login");
   }
-  console.log(req.session.user);
   const article = await Guide.findById(req.params.id);
   res.render("edit-article", {
     title: "Add Article",
@@ -222,11 +222,12 @@ router.post("/edit-article/:id", async (req, res) => {
   if (!req.session.user.id) {
     return res.redirect("/login");
   }
-  const { title, content } = req.body;
+  const { title, content, is_member_only } = req.body;
   try {
     await Guide.findByIdAndUpdate(req.params.id, {
       title,
       content,
+      is_member_only,
       author: req.session.user.id,
     });
     res.redirect("/articles");

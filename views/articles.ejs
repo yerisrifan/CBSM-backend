@@ -6,7 +6,7 @@
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Title</th>
-                <th scope="col">Content</th>
+                <th scope="col">Content For</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -15,7 +15,7 @@
               <tr>
                 <th scope="row"><%= [i+1] %></th>
                 <td><%= articles[i].title %></td>
-                <td class="text-truncate" style="max-width: 500px;"><%= articles[i].content %></td>
+                <td class="text-truncate" style="max-width: 500px;"><%= articles[i].is_member_only === false ? 'Non Member' : 'Member' %></td>
                 <td>
                     <a href="/edit-article/<%= articles[i]._id %>" type="button" class="btn btn-success btn-sm  text-white">Edit</a>
                     <a href="/delete-article/<%= articles[i]._id %>" type="button" class="btn btn-danger btn-sm text-white">Delete</a>
