@@ -95,13 +95,17 @@ canarySchema.pre("save", function (next) {
   next();
 });
 
-canarySchema.pre("findByIdAndUpdate", function (next) {
-  this.data.ring = this.data.ring.toUpperCase();
-  if (this.data.ring_alt) {
-    this.data.ring_alt = this.data.ring_alt.toUpperCase();
-  }
-  if (this.data.seri) {
-    this.data.seri = this.data.seri.toUpperCase();
+canarySchema.pre(["findOneAndUpdate", "findByIdAndUpdate"], function (next) {
+  const update = this.getUpdate();
+  if (update.$set) {
+    if (update.$set.ring) update.$set.ring = update.$set.ring.toUpperCase();
+    if (update.$set.ring_alt)
+      update.$set.ring_alt = update.$set.ring_alt.toUpperCase();
+    if (update.$set.seri) update.$set.seri = update.$set.seri.toUpperCase();
+  } else {
+    if (update.ring) update.ring = update.ring.toUpperCase();
+    if (update.ring_alt) update.ring_alt = update.ring_alt.toUpperCase();
+    if (update.seri) update.seri = update.seri.toUpperCase();
   }
   next();
 });
