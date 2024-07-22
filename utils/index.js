@@ -76,7 +76,7 @@ async function getAllRelatedCanaries(id) {
     if (!visited.has(currentId.toString())) {
       visited.add(currentId.toString());
       const canary = await Canary.findOne({ id: currentId })
-        .select("data.ring data.avatar data.gender rels id")
+        .select("data.ring data.avatar data.gender data.seri rels id")
         .lean();
       if (canary) {
         canary.data.avatar = process.env.BASE_URL + "/" + canary.data.avatar;

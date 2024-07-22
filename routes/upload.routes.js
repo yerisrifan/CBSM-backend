@@ -63,7 +63,7 @@ router.post("/", userMiddleware, upload.single("photo"), (req, res) => {
 });
 
 router.post("/web", uploadArticle.single("file"), (req, res) => {
-  const baseUrl = `${req.protocol}://${req.get("host")}/`;
+  const baseUrl = process.env.BASE_URL + "/";
   res.status(200).json({
     message: "success!",
     path: req.file.path,

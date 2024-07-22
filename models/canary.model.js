@@ -17,6 +17,10 @@ const canarySchema = mongoose.Schema(
         type: String,
         default: "",
       },
+      seri: {
+        type: String,
+        default: null,
+      },
       ring_alt: {
         type: String,
         default: null,
@@ -82,6 +86,12 @@ canarySchema.pre("save", function (next) {
 // midleware untuk mengubah data ring menjadi uppercase sebelum di save
 canarySchema.pre("save", function (next) {
   this.data.ring = this.data.ring.toUpperCase();
+  if (this.data.ring_alt) {
+    this.data.ring_alt = this.data.ring_alt.toUpperCase();
+  }
+  if (this.data.seri) {
+    this.data.seri = this.data.seri.toUpperCase();
+  }
   next();
 });
 

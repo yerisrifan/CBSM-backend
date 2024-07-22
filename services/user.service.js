@@ -12,8 +12,8 @@ class UserService {
 
   static async getAllUsers() {
     // create filter show user with user_level !== 0
-    const query = { user_level: { $ne: 0 } };
-    return await User.find(query).sort({ createdAt: -1 }).lean();
+    const query = { user_level: { $ne: 0 } }; // filter for user_level !== 0
+    return await User.find().sort({ createdAt: -1 }).lean();
   }
 
   static async createUser(userData) {
