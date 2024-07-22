@@ -76,6 +76,12 @@ const canarySchema = mongoose.Schema(
 canarySchema.index({ id: 1, owner: 1, "data.gender": 1 });
 
 // Middleware to generate id from _id if not provided
+function toUpperCase(obj) {
+  if (obj.ring) obj.ring = obj.ring.toUpperCase();
+  if (obj.ring_alt) obj.ring_alt = obj.ring_alt.toUpperCase();
+  if (obj.seri) obj.seri = obj.seri.toUpperCase();
+}
+
 canarySchema.pre("save", function (next) {
   if (!this.id) {
     this.id = this._id.toHexString();
