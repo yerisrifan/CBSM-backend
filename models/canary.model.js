@@ -84,34 +84,28 @@ canarySchema.pre("save", function (next) {
 });
 
 // midleware untuk mengubah data ring menjadi uppercase sebelum di save
-function toUpperCase(obj) {
-  if (obj.ring) obj.ring = obj.ring.toUpperCase();
-  if (obj.ring_alt) obj.ring_alt = obj.ring_alt.toUpperCase();
-  if (obj.seri) obj.seri = obj.seri.toUpperCase();
-}
-
 canarySchema.pre("save", function (next) {
   toUpperCase(this);
   next();
 });
 
-canarySchema.pre("findByIdAndUpdate", function (next) {
-  if (this._update) {
-    toUpperCase(this._update);
+canarySchema.pre("findOneAndUpdate", function (next) {
+  if (this._update.$set) {
+    toUpperCase(this._update.$set);
   }
   next();
 });
 
 canarySchema.pre("updateOne", function (next) {
-  if (this._update) {
-    toUpperCase(this._update);
+  if (this._update.$set) {
+    toUpperCase(this._update.$set);
   }
   next();
 });
 
 canarySchema.pre("updateMany", function (next) {
-  if (this._update) {
-    toUpperCase(this._update);
+  if (this._update.$set) {
+    toUpperCase(this._update.$set);
   }
   next();
 });
