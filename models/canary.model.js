@@ -95,7 +95,7 @@ canarySchema.pre("save", function (next) {
   next();
 });
 
-canarySchema.pre("findOneAndUpdate", function (next) {
+canarySchema.pre("findByIdAndUpdate", function (next) {
   if (this._update) {
     toUpperCase(this._update);
   }
