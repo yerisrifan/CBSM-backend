@@ -76,12 +76,6 @@ const canarySchema = mongoose.Schema(
 canarySchema.index({ id: 1, owner: 1, "data.gender": 1 });
 
 // Middleware to generate id from _id if not provided
-function toUpperCase(obj) {
-  if (obj.ring) obj.ring = obj.ring.toUpperCase();
-  if (obj.ring_alt) obj.ring_alt = obj.ring_alt.toUpperCase();
-  if (obj.seri) obj.seri = obj.seri.toUpperCase();
-}
-
 canarySchema.pre("save", function (next) {
   if (!this.id) {
     this.id = this._id.toHexString();
@@ -91,27 +85,23 @@ canarySchema.pre("save", function (next) {
 
 // midleware untuk mengubah data ring menjadi uppercase sebelum di save
 canarySchema.pre("save", function (next) {
-  toUpperCase(this);
-  next();
-});
-
-canarySchema.pre("findOneAndUpdate", function (next) {
-  if (this._update.$set) {
-    toUpperCase(this._update.$set);
+  this.data.ring = this.data.ring.toUpperCase();
+  if (this.data.ring_alt) {
+    this.data.ring_alt = this.data.ring_alt.toUpperCase();
+  }
+  if (this.data.seri) {
+    this.data.seri = this.data.seri.toUpperCase();
   }
   next();
 });
 
-canarySchema.pre("updateOne", function (next) {
-  if (this._update.$set) {
-    toUpperCase(this._update.$set);
+canarySchema.pre("findByIdAndUpdate", function (next) {
+  this.data.ring = this.data.ring.toUpperCase();
+  if (this.data.ring_alt) {
+    this.data.ring_alt = this.data.ring_alt.toUpperCase();
   }
-  next();
-});
-
-canarySchema.pre("updateMany", function (next) {
-  if (this._update.$set) {
-    toUpperCase(this._update.$set);
+  if (this.data.seri) {
+    this.data.seri = this.data.seri.toUpperCase();
   }
   next();
 });
