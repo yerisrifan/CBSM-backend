@@ -95,20 +95,27 @@ canarySchema.pre("save", function (next) {
   next();
 });
 
-canarySchema.pre(["findOneAndUpdate", "findByIdAndUpdate"], function (next) {
-  const update = this.getUpdate();
-  if (update.$set) {
-    if (update.$set.ring) update.$set.ring = update.$set.ring.toUpperCase();
-    if (update.$set.ring_alt)
-      update.$set.ring_alt = update.$set.ring_alt.toUpperCase();
-    if (update.$set.seri) update.$set.seri = update.$set.seri.toUpperCase();
-  } else {
-    if (update.ring) update.ring = update.ring.toUpperCase();
-    if (update.ring_alt) update.ring_alt = update.ring_alt.toUpperCase();
-    if (update.seri) update.seri = update.seri.toUpperCase();
+// Middleware for update operations
+canarySchema.pre(
+  ["findOneAndUpdate", "updateOne", "updateMany"],
+  function (next) {
+    const update = this.getUpdate();
+    if (update.$set && update.$set.data) {
+      if (update.$set.data.ring)
+        update.$set.data.ring = update.$set.data.ring.toUpperCase();
+      if (update.$set.data.ring_alt)
+        update.$set.data.ring_alt = update.$set.data.ring_alt.toUpperCase();
+      if (update.$set.data.seri)
+        update.$set.data.seri = update.$set.data.seri.toUpperCase();
+    } else if (update.data) {
+      if (update.data.ring) update.data.ring = update.data.ring.toUpperCase();
+      if (update.data.ring_alt)
+        update.data.ring_alt = update.data.ring_alt.toUpperCase();
+      if (update.data.seri) update.data.seri = update.data.seri.toUpperCase();
+    }
+    next();
   }
-  next();
-});
+);
 
 // Middleware to add base URL on avatar before sending response
 canarySchema.methods.toJSON = function () {
