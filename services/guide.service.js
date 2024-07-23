@@ -8,9 +8,14 @@ class GuideService {
   }
 
   static async getAllGuides({ limit, skip }) {
-    return Guide.find().limit(limit).skip(skip);
-  }
+    try {
+      const guides = await Guide.find().limit(limit).skip(skip).lean();
 
+      return { guides, total: guides.length };
+    } catch (error) {
+      throw new Error(`Failed to fetch guides: ${error.message}`);
+    }
+  }
   static async getGuideById(id) {
     return Guide.findById(id);
   }
