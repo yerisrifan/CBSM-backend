@@ -7,8 +7,8 @@ class GuideService {
     return guide;
   }
 
-  static async getAllGuides() {
-    return Guide.find().populate("author");
+  static async getAllGuides({ limit, skip }) {
+    return Guide.find().limit(limit).skip(skip);
   }
 
   static async getGuideById(id) {

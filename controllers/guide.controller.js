@@ -11,11 +11,16 @@ class GuideController {
   }
 
   static async getAllGuides(req, res) {
+    // create limit for pagination
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+
     try {
-      const guides = await GuideService.getAllGuides();
+      const guides = await GuideService.getAllGuides(limit, skip);
       res.status(200).send({ msg: "Guides fetched successfully", guides });
     } catch (error) {
-      res.status(500).send(error);
+      res.status(500).send({ msg: "Error fetching guides", error });
     }
   }
 
