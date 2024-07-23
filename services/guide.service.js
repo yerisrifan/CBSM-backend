@@ -9,7 +9,11 @@ class GuideService {
 
   static async getAllGuides({ limit, skip }) {
     try {
-      const guides = await Guide.find().limit(limit).skip(skip).lean();
+      const guides = await Guide.find()
+        .populate("author")
+        .limit(limit)
+        .skip(skip)
+        .lean();
 
       return { guides, total: guides.length };
     } catch (error) {
