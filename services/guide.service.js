@@ -21,7 +21,7 @@ class GuideService {
     }
   }
   static async getGuideById(id) {
-    return Guide.findById(id);
+    return Guide.findById(id).populate("author").lean();
   }
 
   static async updateGuide(id, data) {
