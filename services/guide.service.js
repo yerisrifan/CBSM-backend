@@ -11,6 +11,7 @@ class GuideService {
     try {
       const guides = await Guide.find()
         .populate("author")
+        .sort({ is_member_only: 1 })
         .limit(limit)
         .skip(skip)
         .lean();
