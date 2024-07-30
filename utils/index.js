@@ -230,16 +230,17 @@ async function sendNotifications(tokens, title, body, data = {}) {
   return tickets;
 }
 
-// Fungsi untuk mengupdate parent dan child
-async function updateParentChild(
+// Fungsi untuk mengupdate parent spouse dan child
+async function updateParentChildAndSpouse(
   oldParentId,
   newParentId,
   childId,
   parentType,
+  otherParentId,
   session
 ) {
   if (oldParentId && oldParentId.toString() !== newParentId.toString()) {
-    // Remove child from old parent's children list
+    // Menghapus anak dari daftar anak orangtua lama
     await Canary.findByIdAndUpdate(
       oldParentId,
       { $pull: { "rels.children": childId } },
@@ -248,7 +249,9 @@ async function updateParentChild(
   }
 
   if (newParentId) {
-    // Add child to new parent's children list
+    const newParent = await Canary.findById(newParentId).session(session);
+
+    // Menambahkan anak ke daftar anak orangtua baru
     await Canary.findByIdAndUpdate(
       newParentId,
       {
@@ -259,6 +262,30 @@ async function updateParentChild(
       },
       { session }
     );
+
+    // Memeriksa dan menambahkan pasangan jika belum ada
+    if (newParent.rels.spouses.length === 0 && otherParentId) {
+      await Canary.findByIdAndUpdate(
+        newParentId,
+        { $addToSet: { "rels.spouses": otherParentId } },
+        { session }
+      );
+
+      // Menambahkan pasangan ke orangtua lainnya juga
+      await Canary.findByIdAndUpdate(
+        otherParentId,
+        {
+          $addToSet: {
+            "rels.spouses": newParentId,
+            "rels.children": childId,
+          },
+          ...(parentType === "father"
+            ? { "data.gender": "F" }
+            : { "data.gender": "M" }),
+        },
+        { session }
+      );
+    }
   }
 }
 
@@ -268,5 +295,5 @@ module.exports = {
   getAllRelatedCanaries,
   deleteAllRelatedCanaries,
   sendNotifications,
-  updateParentChild,
+  updateParentChildAndSpouse,
 };

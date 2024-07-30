@@ -2,7 +2,10 @@ const Canary = require("../models/canary.model");
 const Egg = require("../models/eggs.model");
 const fs = require("fs");
 const mongoose = require("mongoose");
-const { getAllRelatedCanaries, updateParentChild } = require("../utils");
+const {
+  getAllRelatedCanaries,
+  updateParentChildAndSpouse,
+} = require("../utils");
 
 class CanaryService {
   static async getAllCanaries(userId, gender) {
@@ -77,32 +80,34 @@ class CanaryService {
     try {
       const canary = await Canary.findById(canaryId).session(session);
       if (!canary) {
-        throw new Error("Canary not found");
+        throw new Error("Canary tidak ditemukan");
       }
 
-      // Handle father update
+      // Menangani pembaruan ayah
       if (updateData.rels && updateData.rels.father) {
-        await updateParentChild(
+        await updateParentChildAndSpouse(
           canary.rels.father,
           updateData.rels.father,
           canaryId,
           "father",
+          updateData.rels.mother,
           session
         );
       }
 
-      // Handle mother update
+      // Menangani pembaruan ibu
       if (updateData.rels && updateData.rels.mother) {
-        await updateParentChild(
+        await updateParentChildAndSpouse(
           canary.rels.mother,
           updateData.rels.mother,
           canaryId,
           "mother",
+          updateData.rels.father,
           session
         );
       }
 
-      // Update the canary with new data
+      // Memperbarui canary dengan data baru
       Object.assign(canary, updateData);
       await canary.save({ session });
 
@@ -113,7 +118,7 @@ class CanaryService {
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
-      throw new Error(`Error updating canary: ${error.message}`);
+      throw new Error(`Error memperbarui canary: ${error.message}`);
     }
   }
 
