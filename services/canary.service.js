@@ -2,7 +2,7 @@ const Canary = require("../models/canary.model");
 const Egg = require("../models/eggs.model");
 const fs = require("fs");
 const mongoose = require("mongoose");
-const { getAllRelatedCanaries } = require("../utils");
+const { getAllRelatedCanaries, updateParentChild } = require("../utils");
 
 class CanaryService {
   static async getAllCanaries(userId, gender) {
@@ -56,17 +56,65 @@ class CanaryService {
     return canary;
   }
 
-  static async updateCanary(canaryId, userId, canaryData) {
-    let canary = await Canary.findOne({ _id: canaryId });
-    if (!canary || canary.owner.toString() !== userId) {
-      throw new Error("Not authorized or Canary not found!");
+  // static async updateCanary(canaryId, userId, canaryData) {
+  //   let canary = await Canary.findOne({ _id: canaryId });
+  //   if (!canary || canary.owner.toString() !== userId) {
+  //     throw new Error("Not authorized or Canary not found!");
+  //   }
+
+  //   canary = await Canary.findByIdAndUpdate(
+  //     canaryId,
+  //     { $set: canaryData },
+  //     { new: true }
+  //   );
+  //   return canary;
+  // }
+
+  static async updateCanary(canaryId, userId, updateData) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      const canary = await Canary.findById(canaryId).session(session);
+      if (!canary) {
+        throw new Error("Canary not found");
+      }
+
+      // Handle father update
+      if (updateData.rels && updateData.rels.father) {
+        await updateParentChild(
+          canary.rels.father,
+          updateData.rels.father,
+          canaryId,
+          "father",
+          session
+        );
+      }
+
+      // Handle mother update
+      if (updateData.rels && updateData.rels.mother) {
+        await updateParentChild(
+          canary.rels.mother,
+          updateData.rels.mother,
+          canaryId,
+          "mother",
+          session
+        );
+      }
+
+      // Update the canary with new data
+      Object.assign(canary, updateData);
+      await canary.save({ session });
+
+      await session.commitTransaction();
+      session.endSession();
+
+      return canary;
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw new Error(`Error updating canary: ${error.message}`);
     }
-    canary = await Canary.findByIdAndUpdate(
-      canaryId,
-      { $set: canaryData },
-      { new: true }
-    );
-    return canary;
   }
 
   static async deleteCanary(canaryId) {

@@ -230,10 +230,43 @@ async function sendNotifications(tokens, title, body, data = {}) {
   return tickets;
 }
 
+// Fungsi untuk mengupdate parent dan child
+async function updateParentChild(
+  oldParentId,
+  newParentId,
+  childId,
+  parentType,
+  session
+) {
+  if (oldParentId && oldParentId.toString() !== newParentId.toString()) {
+    // Remove child from old parent's children list
+    await Canary.findByIdAndUpdate(
+      oldParentId,
+      { $pull: { "rels.children": childId } },
+      { session }
+    );
+  }
+
+  if (newParentId) {
+    // Add child to new parent's children list
+    await Canary.findByIdAndUpdate(
+      newParentId,
+      {
+        $addToSet: { "rels.children": childId },
+        ...(parentType === "father"
+          ? { "data.gender": "M" }
+          : { "data.gender": "F" }),
+      },
+      { session }
+    );
+  }
+}
+
 module.exports = {
   checkAndUpdateSpouses,
   removeSpouses,
   getAllRelatedCanaries,
   deleteAllRelatedCanaries,
   sendNotifications,
+  updateParentChild,
 };
