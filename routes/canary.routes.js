@@ -12,5 +12,4 @@ router.post("/:id/spouse", userMiddleware, CanaryController.addSpouse);
 router.post("/child", userMiddleware, CanaryController.addChild);
 router.get("/:id/related", CanaryController.getRelatedCanaries);
 router.get("/:id/download", CanaryController.downloadPDF);
-
 module.exports = router;

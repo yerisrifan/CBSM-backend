@@ -13,6 +13,9 @@ const eggRoutes = require("./routes/eggs.routes");
 
 const connectDB = require("./config/database");
 
+// run schedule
+require("./utils/scheduler");
+
 connectDB();
 const PORT = process.env.PORT || 5000;
 

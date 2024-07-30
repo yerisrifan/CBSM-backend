@@ -10,6 +10,7 @@ const userMiddleware = require("../middleware");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { render } = require("ejs");
+const CanaryService = require("../services/canary.service");
 
 function jwtSignKey(key) {
   return jwt.sign({ secret_key: key }, process.env.JWTSECRET, {
@@ -56,6 +57,16 @@ router.get("/allData", userMiddleware, async (req, res) => {
       eggs: eggs,
     },
   });
+});
+
+router.get("/statistics", userMiddleware, async (req, res) => {
+  const userID = req.user;
+  const year = req.query.year || new Date().getFullYear();
+  const canary = await CanaryService.getStatistics(year, userID._id);
+
+  res
+    .status(200)
+    .send({ msg: "Successfully get statistics", statistic: canary });
 });
 
 router.get("/status", (req, res) => {

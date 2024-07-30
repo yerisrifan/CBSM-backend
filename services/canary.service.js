@@ -1,6 +1,7 @@
 const Canary = require("../models/canary.model");
 const Egg = require("../models/eggs.model");
 const fs = require("fs");
+const mongoose = require("mongoose");
 const { getAllRelatedCanaries } = require("../utils");
 
 class CanaryService {
@@ -137,7 +138,8 @@ class CanaryService {
   }
 
   static async addChild(userId, childData) {
-    const { ring, gender, father_id, mother_id, egg_id } = childData;
+    const { ring, gender, father_id, mother_id, egg_id, date_of_birth } =
+      childData;
     const father = await Canary.findOne({ _id: father_id });
     if (!father) {
       throw new Error("Father not found!");
@@ -149,7 +151,7 @@ class CanaryService {
     const child = new Canary({
       owner: userId,
       data: {
-        date_of_birth: new Date(),
+        date_of_birth,
         ring,
         gender,
       },
@@ -222,6 +224,38 @@ class CanaryService {
 
     // Filter out canaries where owner is null (due to not matching the user_level criteria)
     return canaries.filter((canary) => canary.owner !== null);
+  }
+  static async getStatistics(years, userId) {
+    try {
+      const year = parseInt(years, 10);
+      const startDate = new Date(year, 0, 1);
+      const endDate = new Date(year + 1, 0, 1);
+
+      console.log(`Fetching statistics for year: ${year}, owner: ${userId}`);
+      console.log(
+        `Start date: ${startDate.toISOString()}, End date: ${endDate.toISOString()}`
+      );
+
+      const objectId = mongoose.Types.ObjectId(userId);
+      console.log(`Converted userId to ObjectId: ${objectId}`);
+
+      const canaries = await Canary.aggregate([
+        {
+          $match: {
+            "data.date_of_banding": { $gte: startDate, $lt: endDate },
+            owner: objectId,
+          },
+        },
+        { $group: { _id: "$data.gender", count: { $sum: 1 } } },
+      ]);
+
+      console.log("Aggregation result:", canaries);
+
+      return canaries;
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+      throw error;
+    }
   }
 }
 
