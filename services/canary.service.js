@@ -268,11 +268,12 @@ class CanaryService {
     const canaries = await Canary.find({
       "data.status": status,
     })
-      .populate({
-        path: "owner",
-        match: { user_level: { $ne: 0 } },
-        select: "user_level",
-      })
+      // .populate({
+      //   path: "owner",
+      //   match: { user_level: { $ne: 0 } },
+      //   select: "user_level",
+      // })
+      .populate("owner")
       .lean();
 
     // Filter out canaries where owner is null (due to not matching the user_level criteria)
