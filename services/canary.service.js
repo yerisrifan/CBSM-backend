@@ -131,10 +131,10 @@ class CanaryService {
       throw new Error("Canary cannot be deleted because it has children");
     }
 
-    // check if canary has paired
-    if (canary.rels.spouses.length > 0) {
-      throw new Error("Canary cannot be deleted because it has paired");
-    }
+    // // check if canary has paired
+    // if (canary.rels.spouses.length > 0) {
+    //   throw new Error("Canary cannot be deleted because it has paired");
+    // }
     await CanaryService._removeCanaryFromRelations(canaryId);
     if (canary.data.avatar !== "uploads/assets/default-bird.png") {
       await fs.unlink(canary.data.avatar, (err) => {

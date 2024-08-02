@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const UserService = require("../services/user.service");
 const { OAuth2Client } = require("google-auth-library");
+const { deleteUserAndRelatedData } = require("../utils");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -78,12 +79,10 @@ class UserController {
   }
 
   static async deleteUser(req, res) {
+    const userID = req.params.id;
     try {
-      const user = await UserService.deleteUser(req.params.id);
-      if (!user) {
-        return res.status(404).send({ error: "User not found" });
-      }
-      res.send(user);
+      const user = await deleteUserAndRelatedData(userID);
+      res.send(`User ${userID} and all related data deleted successfully`);
     } catch (error) {
       console.error(error.message);
       res.status(500).send(error);

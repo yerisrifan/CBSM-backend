@@ -10,7 +10,7 @@ const cron = require("node-cron");
 
 // const checkEggs = require("./checkEggs");
 
-cron.schedule("0 */6 * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
   console.log("Running daily egg check...");
   try {
     //await checkEggs();

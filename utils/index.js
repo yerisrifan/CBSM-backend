@@ -1,4 +1,8 @@
-const Canary = require("../models/canary.model");
+const User = require("./models/user.model");
+const Canary = require("./models/canary.model");
+const Pair = require("./models/pair.model");
+const Incubation = require("./models/incubation.model");
+const Egg = require("./models/eggs.model");
 const { Expo } = require("expo-server-sdk");
 
 // inisiasi expo
@@ -289,6 +293,57 @@ async function updateParentChildAndSpouse(
   }
 }
 
+// Fungsi untuk menghapus user dan data terkait
+async function deleteUserAndRelatedData(userId) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Find the user
+    const user = await User.findById(userId).session(session);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Delete Canaries
+    await Canary.deleteMany({ owner: userId }).session(session);
+
+    // Delete Pairs
+    const pairs = await Pair.find({ owner: userId }).session(session);
+    for (const pair of pairs) {
+      await Incubation.deleteMany({ pair: pair._id }).session(session);
+    }
+    await Pair.deleteMany({ owner: userId }).session(session);
+
+    // Delete Incubations
+    const incubations = await Incubation.find({ owner: userId }).session(
+      session
+    );
+    for (const incubation of incubations) {
+      await Egg.deleteMany({ incubation: incubation._id }).session(session);
+    }
+    await Incubation.deleteMany({ owner: userId }).session(session);
+
+    // Delete Eggs
+    await Egg.deleteMany({ owner: userId }).session(session);
+
+    // Delete User
+    await User.findByIdAndDelete(userId).session(session);
+
+    // Commit the transaction
+    await session.commitTransaction();
+    console.log(`User ${userId} and all related data deleted successfully`);
+  } catch (error) {
+    // If an error occurred, abort the transaction
+    await session.abortTransaction();
+    console.error("Error deleting user and related data:", error);
+    throw error;
+  } finally {
+    // End the session
+    session.endSession();
+  }
+}
+
 module.exports = {
   checkAndUpdateSpouses,
   removeSpouses,
@@ -296,4 +351,5 @@ module.exports = {
   deleteAllRelatedCanaries,
   sendNotifications,
   updateParentChildAndSpouse,
+  deleteUserAndRelatedData,
 };
