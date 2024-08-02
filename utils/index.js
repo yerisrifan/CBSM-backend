@@ -1,8 +1,8 @@
-const User = require("./models/user.model");
-const Canary = require("./models/canary.model");
-const Pair = require("./models/pair.model");
-const Incubation = require("./models/incubation.model");
-const Egg = require("./models/eggs.model");
+const User = require("../models/user.model");
+const Canary = require("../models/canary.model");
+const Pair = require("../models/pair.model");
+const Incubation = require("../models/incubation.model");
+const Egg = require("../models/eggs.model");
 const { Expo } = require("expo-server-sdk");
 
 // inisiasi expo
