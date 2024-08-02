@@ -4,6 +4,7 @@ const Pair = require("../models/pair.model");
 const Incubation = require("../models/incubation.model");
 const Egg = require("../models/eggs.model");
 const { Expo } = require("expo-server-sdk");
+const mongoose = require("mongoose");
 
 // inisiasi expo
 const expo = new Expo({ useFcmV1: true });
