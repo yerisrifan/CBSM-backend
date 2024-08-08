@@ -10,7 +10,7 @@ const { updateEggStatus, sendNotificationEggHatched } = require(".");
 // */12 * * * * - every 12 hours
 // */24 * * * * - every 24 hours
 
-cron.schedule("0 3 * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
   console.log("Running daily egg check...");
   try {
     await updateEggStatus();
