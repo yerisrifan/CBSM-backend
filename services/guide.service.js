@@ -9,17 +9,19 @@ class GuideService {
 
   static async getAllGuides({ limit, skip }) {
     try {
+      // create filter if there guide.status and guide.status === "published" return all, but hidden if guide.status === "draft" and guide.status === "archived"
       const filter = {
         $or: [{ status: "published" }, { status: { $exists: false } }],
       };
 
-      const guides = await Guide.find()
+      const guides = await Guide.find(filter)
         .populate("author")
         .sort({ createdAt: -1 })
         .limit(limit)
         .skip(skip)
         .lean();
-      return guides;
+
+      return { guides, total: guides.length };
     } catch (error) {
       throw new Error(`Failed to fetch guides: ${error.message}`);
     }
