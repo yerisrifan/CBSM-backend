@@ -13,7 +13,7 @@ class GuideService {
         $or: [{ status: "published" }, { status: { $exists: false } }],
       };
 
-      const guides = await Guide.find(filter)
+      const guides = await Guide.find()
         .populate("author")
         .sort({ createdAt: -1 })
         .limit(limit)
