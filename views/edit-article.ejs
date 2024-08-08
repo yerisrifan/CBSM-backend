@@ -30,6 +30,17 @@
           
         </div>
         <div class="mb-3">
+          <label for="status" class="form-label"
+            >Article Status</label
+          >
+          <select class="form-select" aria-label="Default select example" name="status">
+            <option selected>Open this select menu</option>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+        <div class="mb-3">
           <label for="content" class="form-label">Content</label>
           <textarea id="editor" name="content">
                   <%= article.content %>

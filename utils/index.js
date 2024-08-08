@@ -345,6 +345,63 @@ async function deleteUserAndRelatedData(userId) {
   }
 }
 
+async function updateEggStatus() {
+  const today = new Date();
+  const fourteenDaysAgo = new Date(today.getTime() - 14 * 24 * 60 * 60 * 1000);
+
+  try {
+    const result = await Egg.updateMany(
+      {
+        status: "Incubating",
+        laid_date: { $lte: fourteenDaysAgo },
+      },
+      {
+        $set: {
+          status: "Hatched",
+          hatched_date: today,
+        },
+      }
+    );
+
+    console.log(`Updated ${result.nModified} eggs to Hatched status.`);
+  } catch (error) {
+    console.error("Error updating egg status:", error);
+  }
+}
+
+async function sendNotificationEggHatched() {
+  try {
+    const hatchedEggs = await Egg.find({
+      status: "Hatched",
+      hatched_date: { $gte: today },
+    }).populate("owner"); // Assuming you have an 'owner' field with a reference to the User model
+
+    if (hatchedEggs.length === 0) {
+      console.log("No hatched eggs found.");
+      return;
+    }
+
+    for (const egg of hatchedEggs) {
+      const title = "Egg Hatched";
+      const body = `Your egg has hatched!`;
+      const data = {
+        egg_id: egg._id,
+        status: "Hatched",
+      };
+
+      const response = await sendNotifications(
+        [egg.owner.notification.fcm_token],
+        title,
+        body,
+        data
+      );
+      console.log("Notification sent", response);
+    }
+  } catch (error) {
+    console.error("Error sending egg hatched notifications:", error);
+  }
+}
+
 module.exports = {
   checkAndUpdateSpouses,
   removeSpouses,
@@ -353,4 +410,6 @@ module.exports = {
   sendNotifications,
   updateParentChildAndSpouse,
   deleteUserAndRelatedData,
+  updateEggStatus,
+  sendNotificationEggHatched,
 };

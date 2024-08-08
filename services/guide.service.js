@@ -9,15 +9,17 @@ class GuideService {
 
   static async getAllGuides({ limit, skip }) {
     try {
-      const guides = await Guide.find()
+      const filter = {
+        $or: [{ status: "published" }, { status: { $exists: false } }],
+      };
+
+      const guides = await Guide.find(filter)
         .populate("author")
-        // .sort({ is_member_only: 1 })
         .sort({ createdAt: -1 })
         .limit(limit)
         .skip(skip)
         .lean();
-
-      return { guides, total: guides.length };
+      return guides;
     } catch (error) {
       throw new Error(`Failed to fetch guides: ${error.message}`);
     }
