@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const fs = require("fs");
+const { sendNotifications } = require("../utils");
 
 class UserService {
   static async getUserById(id) {
@@ -82,6 +83,21 @@ class UserService {
       );
     } catch (error) {
       throw new Error(`Error updating FCM token: ${error.message}`);
+    }
+  }
+
+  static async sendNotificationToAllUsers(title, body) {
+    try {
+      const users = await User.find();
+      users.forEach((user) => {
+        if (user.notification.fcm_token) {
+          sendNotifications([user.notification.fcm_token], title, body);
+        }
+      });
+    } catch (error) {
+      throw new Error(
+        `Error sending notification to all users: ${error.message}`
+      );
     }
   }
 }

@@ -3,11 +3,7 @@ const Canary = require("../models/canary.model");
 const Pair = require("../models/pair.model");
 const Incubation = require("../models/incubation.model");
 const Egg = require("../models/eggs.model");
-const { Expo } = require("expo-server-sdk");
 const mongoose = require("mongoose");
-
-// inisiasi expo
-const expo = new Expo({ useFcmV1: true });
 
 // Function to check and update spouses
 async function checkAndUpdateSpouses(fatherId, motherId) {
@@ -201,39 +197,6 @@ async function deleteAllRelatedCanaries(_id) {
 }
 
 // Fungsi untuk mengirim notifikasi
-async function sendNotifications(tokens, title, body, data = {}) {
-  let messages = [];
-  for (let token of tokens) {
-    if (!Expo.isExpoPushToken(token)) {
-      console.error(`Push token ${token} is not a valid Expo push token`);
-      continue;
-    }
-
-    messages.push({
-      to: token,
-      sound: "default",
-      title: title,
-      body: body,
-      priority: "high",
-      data: data,
-    });
-  }
-
-  let chunks = expo.chunkPushNotifications(messages);
-  let tickets = [];
-
-  for (let chunk of chunks) {
-    try {
-      let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-      tickets.push(...ticketChunk);
-      console.log("notification sent ..." + ticketChunk);
-    } catch (error) {
-      console.error("Error sending notifications:", error);
-    }
-  }
-
-  return tickets;
-}
 
 // Fungsi untuk mengupdate parent spouse dan child
 async function updateParentChildAndSpouse(
@@ -369,47 +332,12 @@ async function updateEggStatus() {
   }
 }
 
-async function sendNotificationEggHatched() {
-  try {
-    const hatchedEggs = await Egg.find({
-      status: "Hatched",
-      hatched_date: { $gte: today },
-    }).populate("owner"); // Assuming you have an 'owner' field with a reference to the User model
-
-    if (hatchedEggs.length === 0) {
-      console.log("No hatched eggs found.");
-      return;
-    }
-
-    for (const egg of hatchedEggs) {
-      const title = "Egg Hatched";
-      const body = `Your egg has hatched!`;
-      const data = {
-        egg_id: egg._id,
-        status: "Hatched",
-      };
-
-      const response = await sendNotifications(
-        [egg.owner.notification.fcm_token],
-        title,
-        body,
-        data
-      );
-      console.log("Notification sent", response);
-    }
-  } catch (error) {
-    console.error("Error sending egg hatched notifications:", error);
-  }
-}
-
 module.exports = {
   checkAndUpdateSpouses,
   removeSpouses,
   getAllRelatedCanaries,
   deleteAllRelatedCanaries,
-  sendNotifications,
   updateParentChildAndSpouse,
   deleteUserAndRelatedData,
   updateEggStatus,
-  sendNotificationEggHatched,
 };

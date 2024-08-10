@@ -3,3 +3,5 @@
 /package-lock.json
 uploads/*
 uploads/
+combined.log
+error.log

@@ -1,5 +1,9 @@
 const cron = require("node-cron");
-const { updateEggStatus, sendNotificationEggHatched } = require(".");
+const { updateEggStatus } = require(".");
+const {
+  refreshFCMTokens,
+  sendNotificationEggHatched,
+} = require("./notification");
 
 // Run the check every day at midnight
 // create schedule run every 6 hours
@@ -10,7 +14,7 @@ const { updateEggStatus, sendNotificationEggHatched } = require(".");
 // */12 * * * * - every 12 hours
 // */24 * * * * - every 24 hours
 
-cron.schedule("*/5 * * * *", async () => {
+cron.schedule("0 3 * * *", async () => {
   console.log("Running daily egg check...");
   try {
     await updateEggStatus();
@@ -21,11 +25,23 @@ cron.schedule("*/5 * * * *", async () => {
 });
 
 cron.schedule("5 3 * * *", async () => {
-  console.log("Running daily egg check...");
+  console.log("Running daily check hatched eggs and send notifications...");
   try {
     await sendNotificationEggHatched();
     console.log("Daily egg check completed successfully.");
   } catch (error) {
     console.error("Error during daily egg check:", error);
+  }
+});
+
+// cron every midnight
+
+cron.schedule("0 0 * * *", async () => {
+  console.log("Running FCM token refresh...");
+  try {
+    await refreshFCMTokens();
+    console.log("FCM token refresh completed successfully.");
+  } catch (error) {
+    console.error("Error during FCM token refresh:", error);
   }
 });

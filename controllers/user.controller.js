@@ -4,6 +4,7 @@ const User = require("../models/user.model");
 const UserService = require("../services/user.service");
 const { OAuth2Client } = require("google-auth-library");
 const { deleteUserAndRelatedData } = require("../utils");
+const { sendNotificationToUserById } = require("../utils/notification");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -144,6 +145,45 @@ class UserController {
     } catch (error) {
       console.error("Google Sign-In error:", error);
       res.status(500).json({ message: "Error signing in with Google" });
+    }
+  }
+
+  static async sendNotificationToAllUsers(req, res) {
+    const { title, body } = req.body;
+    console.log(req.user);
+    // if user.level !== 2 then return error
+    if (req.user.user_level !== 2) {
+      return res.status(400).send({ msg: "Unauthorized" });
+    }
+    try {
+      const notification = await UserService.sendNotificationToAllUsers(
+        title,
+        body
+      );
+      res.status(200).send(notification);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send({ msg: "Error sending notification", error });
+    }
+  }
+
+  static async sendNotificationToUserById(req, res) {
+    const { userId } = req.params;
+    const { title, body } = req.body;
+    if (!title || !body) {
+      return res.status(400).json({ error: "Missing title or body" });
+    }
+    try {
+      await sendNotificationToUserById(userId, title, body);
+      res.json({
+        success: true,
+        message: `Notification sent to user ${userId}`,
+      });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ error: `Error sending notification to user ${userId}` });
     }
   }
 }
