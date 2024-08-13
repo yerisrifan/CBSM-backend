@@ -14,7 +14,7 @@ const {
 // */12 * * * * - every 12 hours
 // */24 * * * * - every 24 hours
 
-cron.schedule("0 3 * * *", async () => {
+cron.schedule("0 0 * * *", async () => {
   console.log("Running daily egg check...");
   try {
     await updateEggStatus();
@@ -24,7 +24,7 @@ cron.schedule("0 3 * * *", async () => {
   }
 });
 
-cron.schedule("5 3 * * *", async () => {
+cron.schedule("0 5 * * *", async () => {
   console.log("Running daily check hatched eggs and send notifications...");
   try {
     await sendNotificationEggHatched();
@@ -33,8 +33,6 @@ cron.schedule("5 3 * * *", async () => {
     console.error("Error during daily egg check:", error);
   }
 });
-
-// cron every midnight
 
 cron.schedule("0 0 * * *", async () => {
   console.log("Running FCM token refresh...");

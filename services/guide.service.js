@@ -10,9 +10,12 @@ class GuideService {
   static async getAllGuides({ limit, skip }) {
     try {
       // create filter if there guide.status and guide.status === "published" return all, but hidden if guide.status === "draft" and guide.status === "archived"
-      const filter = {
-        $or: [{ status: "published" }, { status: { $exists: false } }],
-      };
+      // const filter = {
+      //   $or: [{ status: "published" }, { status: { $exists: false } }],
+      // };
+
+      // buat filter agar guide yang tampil hanya dengan status archived
+      const filter = { status: "archived" };
 
       const guides = await Guide.find(filter)
         .populate("author")

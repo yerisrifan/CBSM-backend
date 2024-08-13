@@ -37,7 +37,28 @@ app.use(
     limit: "50mb",
   })
 );
-app.use(morgan("dev"));
+app.use(
+  morgan("tiny", {
+    skip: (req, res) => {
+      // Define file extensions to skip
+      const skipExtensions = [
+        ".css",
+        ".js",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".svg",
+        ".ico",
+        ".json",
+      ];
+      return (
+        skipExtensions.some((ext) => req.url.endsWith(ext)) ||
+        req.url.startsWith("/public")
+      );
+    },
+  })
+);
 app.use(cors());
 app.set("views", "views");
 app.set("view engine", "ejs");
