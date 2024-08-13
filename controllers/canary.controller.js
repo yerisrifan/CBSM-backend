@@ -12,7 +12,7 @@ class CanaryController {
         return res.status(200).send({
           msg: "Successfully get canary data",
           count: canaryStatus.length,
-          canary: canaryStatus,
+          canary: [],
         });
       }
       // search by ring
