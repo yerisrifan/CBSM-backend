@@ -174,7 +174,9 @@ class CanaryController {
     try {
       const { status } = req.query;
       const canaries = await CanaryService.getCanaryByStatus(status);
-      res.status(200).send({ msg: "Successfully get canary data", canaries });
+      res
+        .status(200)
+        .send({ msg: "Successfully get canary data", canaries: [] });
     } catch (error) {
       console.error(error);
       res.status(500).send({ msg: "Error getting canary data", error });
