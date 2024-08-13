@@ -1,6 +1,6 @@
 const User = require("../models/user.model");
 const fs = require("fs");
-const { sendNotifications } = require("../utils");
+const { sendNotifications } = require("../utils/notification");
 
 class UserService {
   static async getUserById(id) {
