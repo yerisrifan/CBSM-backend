@@ -1,6 +1,7 @@
 const { Expo } = require("expo-server-sdk");
 const winston = require("winston");
 const User = require("../models/user.model");
+const Egg = require("../models/eggs.model");
 
 // inisiasi expo
 const expo = new Expo();
