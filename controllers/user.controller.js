@@ -150,7 +150,6 @@ class UserController {
 
   static async sendNotificationToAllUsers(req, res) {
     const { title, body } = req.body;
-    console.log(req.user);
     // if user.level !== 2 then return error
     if (req.user.user_level !== 2) {
       return res.status(400).send({ msg: "Unauthorized" });
