@@ -11,10 +11,30 @@ class UserService {
     }
   }
 
-  static async getAllUsers() {
-    // create filter show user with user_level !== 0
-    const query = { user_level: { $ne: 0 } }; // filter for user_level !== 0
-    return await User.find().sort({ createdAt: -1 }).lean();
+  static async getAllUsers(page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+
+    try {
+      const query = { user_level: { $ne: 0 } }; // filter for user_level !== 0
+
+      const users = await User.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+      const total = await User.countDocuments();
+
+      return {
+        users,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        total,
+      };
+    } catch (error) {
+      console.error("Error in UserService.getAllUsers:", error);
+      throw error;
+    }
   }
 
   static async createUser(userData) {

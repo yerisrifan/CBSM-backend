@@ -23,11 +23,16 @@ class UserController {
 
   static async getAllUsers(req, res) {
     try {
-      const users = await UserService.getAllUsers();
-      res.status(200).send(users);
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+
+      const result = await UserService.getAllUsers(page, limit);
+      res.status(200).json(result);
     } catch (error) {
-      console.error(error.message);
-      res.status(500).send({ msg: "Error getting users", error });
+      console.error("Error in getAllUsers controller:", error.message);
+      res
+        .status(500)
+        .json({ msg: "Error getting users", error: error.message });
     }
   }
 
