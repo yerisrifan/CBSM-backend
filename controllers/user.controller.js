@@ -36,6 +36,16 @@ class UserController {
     }
   }
 
+  static async getUserById(req, res) {
+    try {
+      const user = await UserService.getUserById(req.params.id);
+      res.status(200).send({ msg: "User found", user });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send({ msg: "Error getting user", error });
+    }
+  }
+
   static async createUser(req, res) {
     try {
       const { email } = req.body;

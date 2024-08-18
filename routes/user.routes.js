@@ -7,6 +7,7 @@ const UserService = require("../services/user.service");
 
 router.get("/", userMiddleware, UserController.getUser);
 router.get("/all", userMiddleware, UserController.getAllUsers);
+router.get("/:id", userMiddleware, UserController.getUserById);
 router.post("/", UserController.createUser);
 router.post("/auth", UserController.loginUser);
 router.put("/", userMiddleware, UserController.updateUser);
