@@ -16,12 +16,13 @@ class PairController {
   }
 
   static async createPair(req, res) {
-    const { male, female, cage } = req.body;
+    const { male, female, cage, notes } = req.body;
     try {
       const pair = await PairService.createPair({
         male,
         female,
         cage,
+        notes,
         owner: req.user._id,
       });
       res.status(201).send({ msg: "Successfully created a pair", pair });

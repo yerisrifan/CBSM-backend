@@ -13,7 +13,7 @@ class PairService {
       .lean();
   }
 
-  static async createPair({ male, female, cage, owner }) {
+  static async createPair({ male, female, cage, owner, notes }) {
     const [maleData, femaleData] = await Promise.all([
       Canary.findById(male),
       Canary.findById(female),
@@ -29,7 +29,7 @@ class PairService {
 
     await checkAndUpdateSpouses(male, female);
 
-    const pair = new Pair({ male, female, cage, owner });
+    const pair = new Pair({ male, female, cage, notes, owner });
     await pair.save();
     return pair;
   }

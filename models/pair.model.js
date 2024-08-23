@@ -20,6 +20,9 @@ const pairSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Canary",
     },
+    notes: {
+      type: String,
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

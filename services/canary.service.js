@@ -274,6 +274,7 @@ class CanaryService {
       //   select: "user_level",
       // })
       .populate("owner")
+      .sort({ createdAt: -1 })
       .lean();
 
     // Filter out canaries where owner is null (due to not matching the user_level criteria)
