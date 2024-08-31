@@ -105,6 +105,43 @@ class UserController {
     }
   }
 
+  static async resetPassword(req, res) {
+    try {
+      const { email, password, repeat_password } = req.body;
+      if (!email || !password || !repeat_password) {
+        return res
+          .status(400)
+          .send({ status: "error", msg: "All fields are required" });
+      }
+      const userEmail = await User.findOne({ email });
+      if (!userEmail) {
+        return res.status(400).send({ status: "error", msg: "User not found" });
+      }
+
+      // check if passwords characters more than 5
+      if (password.length < 5) {
+        return res
+          .status(400)
+          .send({
+            status: "error",
+            msg: "Password must be at least 5 characters",
+          });
+      }
+      if (password !== repeat_password) {
+        return res
+          .status(400)
+          .send({ status: "error", msg: "Passwords do not match" });
+      }
+      const user = await UserService.resetPassword(userEmail._id, password);
+      res
+        .status(200)
+        .send({ status: "success", msg: "Password reset successful", user });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send(error);
+    }
+  }
+
   static async updateUserFCMToken(req, res) {
     const id = req.user._id || req.user.id;
     const { fcm_token, deviceInfo } = req.body;

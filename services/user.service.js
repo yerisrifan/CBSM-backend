@@ -86,6 +86,20 @@ class UserService {
     }
   }
 
+  static async resetPassword(id, password) {
+    try {
+      const user = await User.findById(id);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      user.password = password;
+      await user.save();
+      return user;
+    } catch (error) {
+      throw new Error(`Error resetting password: ${error.message}`);
+    }
+  }
+
   static async updateUserFCMToken(id, fcm_token, deviceInfo) {
     try {
       return await User.findByIdAndUpdate(

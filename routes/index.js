@@ -114,6 +114,44 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/forgot-password", (req, res) => {
+  res.render("forgotpassword", {
+    title: "Forgot Password",
+    layout: "layout-auth",
+  });
+});
+
+router.post("/forgot-password", async (req, res) => {
+  const { email, password, repeat_password } = req.body;
+  console.log(`${process.env.BASE_URL}/api/forgot-password`);
+  const post = await fetch(`${process.env.BASE_URL}/api/user/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      repeat_password,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.log(error);
+      return error;
+    });
+
+  res.render("forgotpassword", {
+    title: "Forgot Password",
+    layout: "layout-auth",
+    status: post.status,
+    msg: post.msg,
+  });
+});
+
 router.get("/dashboard", async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/login");
@@ -123,8 +161,6 @@ router.get("/dashboard", async (req, res) => {
   const pair = await Pair.countDocuments();
   const incubation = await Incubation.countDocuments();
   const eggs = await Eggs.countDocuments();
-
-  console.log(canary, pair, incubation, eggs);
 
   res.render("dashboard", {
     title: "Dashboard",

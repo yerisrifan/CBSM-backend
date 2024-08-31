@@ -4,21 +4,20 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
 const expressLayouts = require("express-ejs-layouts");
+const helmet = require("helmet");
 const path = require("path");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
-// const route
-const eggRoutes = require("./routes/eggs.routes");
+const connectDB = require("./config/database"); // Koneksi database v1 (lama)
 
-const connectDB = require("./config/database");
+connectDB();
 
 // run schedule
 require("./utils/scheduler");
 
-connectDB();
 const PORT = process.env.PORT || 5000;
-
+app.use(helmet());
 // setup session
 app.use(
   session({
@@ -51,6 +50,8 @@ app.use(
         ".svg",
         ".ico",
         ".json",
+        ".map",
+        ".md",
       ];
       return (
         skipExtensions.some((ext) => req.url.endsWith(ext)) ||
@@ -76,7 +77,7 @@ app.use("/api/upload", require("./routes/upload.routes"));
 app.use("/api/user", require("./routes/user.routes"));
 app.use("/api/canary", require("./routes/canary.routes"));
 app.use("/api/pair", require("./routes/pair.routes"));
-app.use("/api/eggs", eggRoutes);
+app.use("/api/eggs", require("./routes/eggs.routes"));
 app.use("/api/incubation", require("./routes/incubation.routes"));
 app.use("/api/guides", require("./routes/guide.routes"));
 app.use("/api/ring", require("./routes/ring.routes"));

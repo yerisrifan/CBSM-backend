@@ -12,6 +12,7 @@ router.post("/", UserController.createUser);
 router.post("/auth", UserController.loginUser);
 router.put("/", userMiddleware, UserController.updateUser);
 router.delete("/:id", UserController.deleteUser);
+router.post("/forgot-password", UserController.resetPassword);
 router.post("/fcm_token", userMiddleware, UserController.updateUserFCMToken);
 router.post(
   "/send-notification",
