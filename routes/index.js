@@ -118,6 +118,8 @@ router.get("/forgot-password", (req, res) => {
   res.render("forgotpassword", {
     title: "Forgot Password",
     layout: "layout-auth",
+    status: "",
+    msg: "",
   });
 });
 
