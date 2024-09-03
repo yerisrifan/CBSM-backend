@@ -17,7 +17,7 @@ connectDB();
 require("./utils/scheduler");
 
 const PORT = process.env.PORT || 5000;
-app.use(helmet());
+// app.use(helmet());
 // setup session
 app.use(
   session({
